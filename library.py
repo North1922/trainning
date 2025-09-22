@@ -64,23 +64,41 @@ class Library:
         self.book_catalog.append(book)
         book.available_copies += copies
 
-
     def remove_book(self, isbn, copies):
-        pass
+        if copies <= 0:
+            raise ValueError('Кол-во книг для удаления должно быть больше 0')
+        for book in self.book_catalog:
+            if book.isbn == isbn:
+                book.available_copies -= copies
+                book.available_copies -= copies
+                print(f'{copies} экземпляров книг под номером {isbn} удалено из библиотеки')
 
-
-
-    def borrow(self, isbn, copies):
-        pass #выдача книги
-
+    def borrow(self, isbn, reader): #выдача книги
+        for book in self.book_catalog:
+            if book.isbn == isbn:
+                book.available_copies -= 1
+                reader.active_loans += 1
 
     def return_book(self, isbn, reader):
-        pass
+        for book in self.book_catalog:
+            if book.isbn == isbn:
+                book.available_copies += 1
+                reader.active_loans -= 1
 
 
     def stock(self, isbn):
-        pass
+        for book in self.book_catalog:
+            if book.isbn == isbn:
+                print(f'Всего книг под номером {isbn}: {book.total_copies}')
+                print(f'Доступно для выдачи книг под номером {isbn}: {book.available_copies}')
+
 
 
     def find(self, query):
-        pass
+        found_book = None
+        for book in self.book_catalog:
+            if book.title == query:
+                found_book = book
+            else:
+                return 'Книга не найдена'
+        return found_book
