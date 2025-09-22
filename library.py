@@ -55,23 +55,24 @@ class Reader: #Класс читателя
 
 class Library:
     def __init__(self, book_catalog, magazine):
-        self.book_catalog = list(book_catalog) #каталог книг
+        self.book_catalog = dict(book_catalog) #каталог книг
         self.magazine = magazine #журнал выдач
 
     def add_book(self, book, copies): #copies это сколько физических экземпляров пытаются добавить в библиотеку
-        if copies > book.total_copies and copies > 0:
+        if book.total_copies > copies > 0:
             raise ValueError('Попытка добавить в библиотеку книг больше чем выпущено ')
-        self.book_catalog.append(book)
-        book.available_copies += copies
+        if book.isbn in self.book_catalog:
+            self.book_catalog[book.isbn].available_copies += copies
+        else:
+            self.book_catalog[book.isbn] = book
+            book.available_copies += copies
 
     def remove_book(self, isbn, copies):
         if copies <= 0:
             raise ValueError('Кол-во книг для удаления должно быть больше 0')
-        for book in self.book_catalog:
-            if book.isbn == isbn:
-                book.available_copies -= copies
-                book.available_copies -= copies
-                print(f'{copies} экземпляров книг под номером {isbn} удалено из библиотеки')
+        book = self.book_catalog[isbn]
+        book.available_copies -= copies
+        print(f'{copies} экземпляров книг под номером {isbn} удалено из библиотеки')
 
     def borrow(self, isbn, reader): #выдача книги
         for book in self.book_catalog:
