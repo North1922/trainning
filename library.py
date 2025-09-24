@@ -37,69 +37,80 @@
 
 class Book:
     def __init__(self, title, author, isbn, total_copies):
-        self.title = title
-        self.author = author
-        self.isbn = isbn
-        self.total_copies = total_copies #сколько всего книг имеется
+        self._title = title
+        self._author = author
+        self._isbn = isbn
+        self._total_copies = total_copies #сколько всего книг имеется
 
-        self.available_copies = 0 #книги доступныве к выдаче. Когда выдаём книгу уменьшаем эту переменную и наоборот при получении книги обратно
+        self._available_copies = 0 #книги доступныве к выдаче. Когда выдаём книгу уменьшаем эту переменную и наоборот при получении книги обратно
 
 
 
 class Reader: #Класс читателя
-    def __init__(self, name, email, active_loans):
-        self.name = name
-        self.email = email
-        self.active_loans = active_loans # книги которые находятся у читателя
+    def __init__(self, name, email):
+        self._name = name
+        self._email = email
+
+        self._active_loans = None # книги которые находятся у читателя
 
 
 class Library:
-    def __init__(self, book_catalog, magazine):
-        self.book_catalog = dict(book_catalog) #каталог книг
-        self.magazine = magazine #журнал выдач
+    def __init__(self):
+        self._book_catalog = dict() #каталог книг
+        # self.__magazine = magazine #журнал выдач
 
     def add_book(self, book, copies): #copies это сколько физических экземпляров пытаются добавить в библиотеку
-        if book.total_copies > copies > 0:
+        if not 0 < copies <= book._total_copies:
             raise ValueError('Попытка добавить в библиотеку книг больше чем выпущено ')
-        if book.isbn in self.book_catalog:
-            self.book_catalog[book.isbn].available_copies += copies
+        if book._isbn in self._book_catalog:
+            self._book_catalog[book._isbn]._available_copies += copies
         else:
-            self.book_catalog[book.isbn] = book
-            book.available_copies += copies
+            self._book_catalog[book._isbn] = book
+            book._available_copies += copies
 
     def remove_book(self, isbn, copies):
         if copies <= 0:
             raise ValueError('Кол-во книг для удаления должно быть больше 0')
-        book = self.book_catalog[isbn]
-        book.available_copies -= copies
+        book = self._book_catalog[isbn]
+        if copies > book._available_copies:
+            raise ValueError(f'Кол-во книг для удаления не должно превышать колличества книг готовых к выдаче : {book._available_copies}')
+        book._available_copies -= copies
         print(f'{copies} экземпляров книг под номером {isbn} удалено из библиотеки')
 
     def borrow(self, isbn, reader): #выдача книги
-        for book in self.book_catalog:
-            if book.isbn == isbn:
-                book.available_copies -= 1
-                reader.active_loans += 1
+        self._book_catalog[isbn]._available_copies -= 1
+        if reader._active_loans == None:
+            reader._active_loans = 1
+        else:
+            reader._active_loans += 1
+        # for book in self._book_catalog:
+        #     if book == isbn:
+        #         book._available_copies -= 1
+        #         reader._active_loans += 1
 
     def return_book(self, isbn, reader):
-        for book in self.book_catalog:
-            if book.isbn == isbn:
-                book.available_copies += 1
-                reader.active_loans -= 1
+        self._book_catalog[isbn]._available_copies += 1
+        reader._active_loans -= 1
 
 
     def stock(self, isbn):
-        for book in self.book_catalog:
-            if book.isbn == isbn:
-                print(f'Всего книг под номером {isbn}: {book.total_copies}')
-                print(f'Доступно для выдачи книг под номером {isbn}: {book.available_copies}')
+        print(f'Всего книг под номером {isbn}: {self._book_catalog[isbn]._total_copies}')
+        print(f'Доступно для выдачи книг под номером {isbn}: {self._book_catalog[isbn]._available_copies}')
+        # for book in self.__book_catalog:
+        #     if book.isbn == isbn:
+        #         print(f'Всего книг под номером {isbn}: {book.total_copies}')
+        #         print(f'Доступно для выдачи книг под номером {isbn}: {book.available_copies}')
 
 
 
     def find(self, query):
         found_book = None
-        for book in self.book_catalog:
-            if book.title == query:
+        for isbn, book in self._book_catalog.items():
+            if book._title == query:
                 found_book = book
             else:
                 return 'Книга не найдена'
         return found_book
+
+
+
