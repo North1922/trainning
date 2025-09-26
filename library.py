@@ -60,6 +60,8 @@ class Library:
         # self.__magazine = magazine #журнал выдач
 
     def add_book(self, book, copies): #copies это сколько физических экземпляров пытаются добавить в библиотеку
+        if not isinstance(book, Book):
+            raise TypeError('Книга должна быть экземпляром класса Book')
         if not 0 < copies <= book._total_copies:
             raise ValueError('Попытка добавить в библиотеку книг больше чем выпущено ')
         if book._isbn in self._book_catalog:
@@ -69,6 +71,8 @@ class Library:
             book._available_copies += copies
 
     def remove_book(self, isbn, copies):
+        if not isbn in self._book_catalog and isinstance(isbn, int) and isinstance(copies, int):
+            raise TypeError('Не верные аргументы')
         if copies <= 0:
             raise ValueError('Кол-во книг для удаления должно быть больше 0')
         book = self._book_catalog[isbn]
@@ -78,28 +82,28 @@ class Library:
         print(f'{copies} экземпляров книг под номером {isbn} удалено из библиотеки')
 
     def borrow(self, isbn, reader): #выдача книги
+        if not isbn in self._book_catalog and isinstance(reader, Reader) and isinstance(isbn, int):
+            raise TypeError('Не верные аргументы')
         self._book_catalog[isbn]._available_copies -= 1
         if reader._active_loans == None:
             reader._active_loans = 1
         else:
             reader._active_loans += 1
-        # for book in self._book_catalog:
-        #     if book == isbn:
-        #         book._available_copies -= 1
-        #         reader._active_loans += 1
 
     def return_book(self, isbn, reader):
+        if not isbn in self._book_catalog and isinstance(reader, Reader) and isinstance(isbn, int):
+            raise TypeError('Не верные аргументы')
+
         self._book_catalog[isbn]._available_copies += 1
         reader._active_loans -= 1
 
 
     def stock(self, isbn):
+        if not isbn in self._book_catalog:
+            raise ValueError('Такого isbn в каталоге книг не существует')
+
         print(f'Всего книг под номером {isbn}: {self._book_catalog[isbn]._total_copies}')
         print(f'Доступно для выдачи книг под номером {isbn}: {self._book_catalog[isbn]._available_copies}')
-        # for book in self.__book_catalog:
-        #     if book.isbn == isbn:
-        #         print(f'Всего книг под номером {isbn}: {book.total_copies}')
-        #         print(f'Доступно для выдачи книг под номером {isbn}: {book.available_copies}')
 
 
 
@@ -111,6 +115,3 @@ class Library:
             else:
                 return 'Книга не найдена'
         return found_book
-
-
-
