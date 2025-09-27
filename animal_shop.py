@@ -83,15 +83,3 @@ class Shop():
 
 
 
-
-first_dog = Dog('bobik', 1000)
-best_shop = Shop(budget=2000)
-print(f'баланс до покупки: {best_shop.budget}')
-best_shop.buy_animal(first_dog)
-print(best_shop.animals)
-print(f'балаанс после покупки:{best_shop.budget}')
-best_shop.sell_animal(first_dog)
-print(f'баланс после продажи:{best_shop.budget}')
-second_dog = Animal('jack', 8000)
-
-print(isinstance(first_dog, Dog))

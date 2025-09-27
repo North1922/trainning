@@ -66,15 +66,4 @@ class RegistrationSystem:
         self.participants.append(participant)
 
 
-first_conf = Conference('Первая конференция', 1)
-second_conf = Conference('Вторая конференция', 5)
-people_one = Participant('Игорь', 'dsdsd@dsd.ru')
-people_two = Participant('Alex', 'sdsdd@sds.com')
-people_three = Participant('John', 'dsdsad@csds.ru')
 
-reg_in_first_conf = RegistrationSystem(first_conf)
-reg_in_first_conf.register(people_one)
-reg_in_first_conf.register(people_two)
-reg_in_first_conf.register(people_three)
-
-print(first_conf.capacity)
