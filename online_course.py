@@ -58,14 +58,17 @@ class Teacher:
 
     @staticmethod
     def list_students(course: Course):  # метод показывавет всех студентов с курса
-        # print(course.dict_of_students)
+        if not course.dict_of_students:
+            print('На курсе нет студентов')
         for key, val in course.dict_of_students.items():
-            print(f'{val.name}, {val.student_id}')
+            print(f'Имя студента: {val.name}. Id: {val.student_id}')
 
-#TODO доработать метод list_students
+
 
 st = Student('alex', 'asda@fdsdf.com', 14)
+ts = Student('max', 'asdamxmasxa@fdsdf.com', 88)
 tc = Teacher('name', 'Python')
 co = Course('road to pro', 88)
 tc.add_student(st, co)
+tc.add_student(ts, co)
 tc.list_students(co)
